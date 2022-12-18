@@ -1,5 +1,8 @@
+--[[
+ THESE ARE EXAMPLE CONFIGS FEEL FREE TO CHANGE TO WHATEVER YOU WANT
+ `lvim` is the global options object
+]]
 require("lvim.lsp.manager").setup("emmet_ls")
-
 local lspconfig = require('lspconfig')
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities.textDocument.completion.completionItem.snippetSupport = true
@@ -17,15 +20,27 @@ lspconfig.emmet_ls.setup({
     },
   }
 })
---[[
-lvim is the global options object
-
-Linters should be
-filled in as strings with either
-a global executable or a path to
-an executable
-]]
--- THESE ARE EXAMPLE CONFIGS FEEL FREE TO CHANGE TO WHATEVER YOU WANT
+-- Enable powershell as your default shell
+vim.opt.shell = "pwsh.exe -NoLogo"
+vim.opt.shellcmdflag =
+"-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;"
+vim.cmd [[
+		let &shellredir = '2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode'
+		let &shellpipe = '2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode'
+		set shellquote= shellxquote=
+  ]]
+require 'nvim-treesitter.install'.compilers = { "zig" }
+-- Set a compatible clipboard manager
+vim.g.clipboard = {
+  copy = {
+    ["+"] = "win32yank.exe -i --crlf",
+    ["*"] = "win32yank.exe -i --crlf",
+  },
+  paste = {
+    ["+"] = "win32yank.exe -o --lf",
+    ["*"] = "win32yank.exe -o --lf",
+  },
+}
 
 -- general
 lvim.log.level = "warn"
@@ -68,7 +83,7 @@ lvim.keys.normal_mode["<S-h>"] = ":BufferLineCyclePrev<CR>"
 -- lvim.builtin.theme.options.style = "storm"
 
 -- Use which-key to add extra bindings with the leader-key prefix
-lvim.builtin.which_key.mappings["P"] = { "<cmd>Telescope projects<CR>", "Projects" }
+-- lvim.builtin.which_key.mappings["P"] = { "<cmd>Telescope projects<CR>", "Projects" }
 -- lvim.builtin.which_key.mappings["t"] = {
 --   name = "+Trouble",
 --   r = { "<cmd>Trouble lsp_references<cr>", "References" },
@@ -79,32 +94,39 @@ lvim.builtin.which_key.mappings["P"] = { "<cmd>Telescope projects<CR>", "Project
 --   w = { "<cmd>Trouble workspace_diagnostics<cr>", "Workspace Diagnostics" },
 -- }
 
--- TODO: User Config for predefined plugins
 -- After changing plugin config exit and reopen LunarVim, Run :PackerInstall :PackerCompile
 lvim.builtin.alpha.active = true
 lvim.builtin.alpha.mode = "dashboard"
-lvim.builtin.terminal.active = true
+lvim.builtin.terminal.active = false
+-- lvim.builtin.terminal.shell = "pwsh.exe -NoLogo"
+
+-- nvim-tree has some performance issues on windows, see kyazdani42/nvim-tree.lua#549
+lvim.builtin.nvimtree.setup.diagnostics.enable = nil
+lvim.builtin.nvimtree.setup.filters.custom = nil
+lvim.builtin.nvimtree.setup.git.enable = nil
+lvim.builtin.nvimtree.setup.update_cwd = nil
+lvim.builtin.nvimtree.setup.update_focused_file.update_cwd = nil
 lvim.builtin.nvimtree.setup.view.side = "left"
-lvim.builtin.nvimtree.setup.renderer.icons.show.git = false
+lvim.builtin.nvimtree.setup.renderer.highlight_git = nil
+lvim.builtin.nvimtree.setup.renderer.icons.show.git = nil
 
 -- if you don't want all the parsers change this to a table of the ones you want
 lvim.builtin.treesitter.ensure_installed = {
-  "bash",
   "c",
-  "javascript",
-  "json",
   "lua",
-  "python",
-  "typescript",
-  "tsx",
-  "css",
-  "rust",
-  "java",
-  "yaml",
 }
 
 lvim.builtin.treesitter.ignore_install = { "haskell" }
 lvim.builtin.treesitter.highlight.enable = true
+lvim.builtin.treesitter.incremental_selection = {
+  enable = true,
+  keymaps = {
+    init_selection = '<c-w>',
+    node_incremental = '<c-w>',
+    -- scope_incremental = '<c-s> ,
+    node_decremental = '<c-s>'
+  }
+}
 
 -- generic LSP settings
 
@@ -133,9 +155,9 @@ lvim.builtin.treesitter.highlight.enable = true
 
 -- ---remove a server from the skipped list, e.g. eslint, or emmet_ls. !!Requires `:LvimCacheReset` to take effect!!
 -- ---`:LvimInfo` lists which server(s) are skipped for the current filetype
-lvim.lsp.automatic_configuration.skipped_servers = vim.tbl_filter(function(server)
-  return server ~= "emmet_ls"
-end, lvim.lsp.automatic_configuration.skipped_servers)
+-- lvim.lsp.automatic_configuration.skipped_servers = vim.tbl_filter(function(server)
+--   return server ~= "emmet_ls"
+-- end, lvim.lsp.automatic_configuration.skipped_servers)
 
 -- -- you can set a custom on_attach function that will be used for all the language servers
 -- -- See <https://github.com/neovim/nvim-lspconfig#keybindings-and-completion>
@@ -153,28 +175,18 @@ formatters.setup {
   { command = "black", filetypes = { "python" } },
   { command = "isort", filetypes = { "python" } },
   {
+    -- each formatter accepts a list of options identical to https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md#Configuration
     command = "prettierd",
-    filetypes = { "typescript", "typescriptreact", "javascript", "vue", "javascriptreact", "css" },
-  }
-  -- {
-  --   -- each formatter accepts a list of options identical to https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md#Configuration
-  --   command = "eslint_d",
-  --   -- ---@usage arguments to pass to the formatter
-  --   -- -- these cannot contain whitespaces, options such as `--line-width 80` become either `{'--line-width', '80'}` or `{'--line-width=80'}`
-  -- extra_args = { "--print-with", "100" },
-  --   -- ---@usage specify which filetypes to enable. By default a providers will attach to all the filetypes it supports.
-  -- filetypes = { "typescript", "typescriptreact", "javascript" , "vue", "javascriptreact" },
-  -- },
+    ---@usage arguments to pass to the formatter
+    -- these cannot contain whitespaces, options such as `--line-width 80` become either `{'--line-width', '80'}` or `{'--line-width=80'}`
+    -- extra_args = { "--print-with", "100" },
+    ---@usage specify which filetypes to enable. By default a providers will attach to all the filetypes it supports.
+    filetypes = { "typescript", "typescriptreact", "vue" },
+  },
 }
 
 -- -- set additional linters
 -- local linters = require "lvim.lsp.null-ls.linters"
--- linters.setup {
---   {
---     exe = "eslint",
---     filetypes = { "javascriptreact", "javascript", "typescriptreact", "typescript", "vue" },
---   },
--- }
 -- linters.setup {
 --   { command = "flake8", filetypes = { "python" } },
 --   {
@@ -193,14 +205,14 @@ formatters.setup {
 
 -- Additional Plugins
 lvim.plugins = {
+  {
+    "folke/trouble.nvim",
+    cmd = "TroubleToggle",
+  },
   { "psliwka/vim-smoothie" },
   { "mg979/vim-visual-multi" },
   { "tpope/vim-surround" },
   { 'ray-x/lsp_signature.nvim' },
-  --     {
-  --       "folke/trouble.nvim",
-  --       cmd = "TroubleToggle",
-  --     },
 }
 
 -- Autocommands (https://neovim.io/doc/user/autocmd.html)
