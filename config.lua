@@ -47,6 +47,7 @@ vim.keymap.set("v", "p", '"_dP', opts)
 lvim.log.level = "warn"
 lvim.format_on_save.enabled = false
 lvim.colorscheme = "lunar"
+lvim.builtin.lualine.style = "default"
 -- to disable icons and use a minimalist setup, uncomment the following
 -- lvim.use_icons = false
 
@@ -122,8 +123,8 @@ lvim.builtin.treesitter.highlight.enable = true
 lvim.builtin.treesitter.incremental_selection = {
   enable = true,
   keymaps = {
-    init_selection = '<c-w>',
-    node_incremental = '<c-w>',
+    init_selection = '<c-e>',
+    node_incremental = '<c-e>',
     -- scope_incremental = '<c-s> ,
     node_decremental = '<c-s>'
   }
@@ -206,7 +207,7 @@ formatters.setup {
 
 -- Additional Plugins
 lvim.plugins = {
-  {
+    {
     "folke/trouble.nvim",
     cmd = "TroubleToggle",
   },
@@ -214,6 +215,7 @@ lvim.plugins = {
   { "mg979/vim-visual-multi" },
   { "tpope/vim-surround" },
   { 'ray-x/lsp_signature.nvim' },
+  { 'Mofiqul/dracula.nvim' }
 }
 
 -- Autocommands (https://neovim.io/doc/user/autocmd.html)
