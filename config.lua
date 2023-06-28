@@ -20,6 +20,17 @@ lspconfig.emmet_ls.setup({
     },
   }
 })
+
+
+local on_attach = function(client, bufnr)
+  -- other stuff --
+  require("tailwindcss-colors").buf_attach(bufnr)
+end
+
+lspconfig["tailwindcss"].setup({
+  -- other settings --
+  on_attach = on_attach,
+})
 -- Enable powershell as your default shell
 vim.opt.shell = "pwsh.exe -NoLogo"
 vim.opt.shellcmdflag =
@@ -29,7 +40,7 @@ vim.cmd [[
 		let &shellpipe = '2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode'
 		set shellquote= shellxquote=
   ]]
-require 'nvim-treesitter.install'.compilers = { "zig" }
+
 -- Set a compatible clipboard manager
 vim.g.clipboard = {
   copy = {
@@ -46,17 +57,28 @@ vim.keymap.set("v", "p", '"_dP', opts)
 -- general
 lvim.log.level = "warn"
 lvim.format_on_save.enabled = false
-lvim.colorscheme = "lunar"
-lvim.builtin.lualine.style = "default"
+lvim.colorscheme = "tokyonight-night"
 -- to disable icons and use a minimalist setup, uncomment the following
 -- lvim.use_icons = false
 
 -- keymappings [view all the defaults by pressing <leader>Lk]
 lvim.leader = "space"
 -- add your own keymapping
--- lvim.keys.normal_mode["<C-s>"] = ":w<cr>"
+lvim.keys.normal_mode["<C-s>"] = ":w<cr>"
 lvim.keys.normal_mode["<S-l>"] = ":BufferLineCycleNext<CR>"
 lvim.keys.normal_mode["<S-h>"] = ":BufferLineCyclePrev<CR>"
+lvim.builtin.lualine.style = "default"
+-- lvim.builtin.lualine.sections.lualine_a = { "mode" }
+-- lvim.builtin.lualine.sections.lualine_y = { "lsp" }
+-- lvim.builtin.lualine.sections = {
+--   lualine_a = { 'mode' },
+--   lualine_b = { 'branch', 'diff', 'diagnostics' },
+--   lualine_c = { 'filename' },
+--   lualine_x = { 'encoding', 'fileformat', 'filetype' },
+--   lualine_y = { 'progress' },
+--   lualine_z = { 'location', 'lsp_progress' }
+-- }
+-- or "none"vim.keys.normal_mode["<S-l>"] = ":BufferLineCycleNext<CR>"
 -- unmap a default keymapping
 -- vim.keymap.del("n", "<C-Up>")
 -- override a default keymapping
@@ -98,6 +120,7 @@ lvim.keys.normal_mode["<S-h>"] = ":BufferLineCyclePrev<CR>"
 
 -- After changing plugin config exit and reopen LunarVim, Run :PackerInstall :PackerCompile
 lvim.builtin.alpha.active = true
+lvim.transparent_window = true
 lvim.builtin.alpha.mode = "dashboard"
 lvim.builtin.terminal.active = true
 -- lvim.builtin.terminal.shell = "pwsh.exe -NoLogo"
@@ -129,7 +152,6 @@ lvim.builtin.treesitter.incremental_selection = {
     node_decremental = '<c-s>'
   }
 }
-
 -- generic LSP settings
 
 -- -- make sure server will always be installed even if the server is in skipped_servers list
@@ -183,7 +205,7 @@ formatters.setup {
     -- these cannot contain whitespaces, options such as `--line-width 80` become either `{'--line-width', '80'}` or `{'--line-width=80'}`
     -- extra_args = { "--print-with", "100" },
     ---@usage specify which filetypes to enable. By default a providers will attach to all the filetypes it supports.
-    filetypes = { "typescript", "typescriptreact", "vue" },
+    filetypes = { "vue", "css" },
   },
 }
 
@@ -207,7 +229,7 @@ formatters.setup {
 
 -- Additional Plugins
 lvim.plugins = {
-    {
+  {
     "folke/trouble.nvim",
     cmd = "TroubleToggle",
   },
@@ -215,7 +237,9 @@ lvim.plugins = {
   { "mg979/vim-visual-multi" },
   { "tpope/vim-surround" },
   { 'ray-x/lsp_signature.nvim' },
-  { 'Mofiqul/dracula.nvim' }
+  { 'Mofiqul/dracula.nvim' },
+  { "rafamadriz/neon" },
+  { 'themaxmarchuk/tailwindcss-colors.nvim' }
 }
 
 -- Autocommands (https://neovim.io/doc/user/autocmd.html)
