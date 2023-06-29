@@ -1,0 +1,3 @@
+https://github.com/JanDeDobbeleer/oh-my-posh/blob/main/themes/takuya.omp.json
+https://www.hanselman.com/blog/my-ultimate-powershell-prompt-with-oh-my-posh-and-the-windows-terminal
+https://www.hanselman.com/blog/adding-predictive-intellisense-to-my-windows-terminal-powershell-prompt-with-psreadline
