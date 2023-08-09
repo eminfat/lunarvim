@@ -1,0 +1,9 @@
+oh-my-posh init pwsh --config 'C:\Users\Emin\Documents\PowerShell\atomic.omp.json' | Invoke-Expression
+Import-Module -Name Terminal-Icons
+Import-Module PSReadLine
+Set-PSReadLineOption -PredictionSource History
+Set-PSReadLineOption -PredictionViewStyle ListView
+Set-PSReadLineOption -EditMode Windows
+#Invoke-Expression (&starship init powershell)
+Set-Alias lvim 'C:\Users\Emin\.local\bin\lvim.ps1'
+Set-Alias gg lazygit
